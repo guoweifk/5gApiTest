@@ -12,6 +12,8 @@ import sctp
 import time
 from threading import Thread
 import random
+from function import authReceive_Result
+
 # 要发送的数据包
 ngsetup_data = b"\x00\x15\x00\x3e\x00\x00\x04\x00\x1b\x00\x09\x00\x00\xf1\x10\x50" \
                b"\x00\x00\x00\x01\x00\x52\x40\x14\x08\x80\x55\x45\x52\x41\x4e\x53" \
@@ -52,6 +54,7 @@ def sctp_client_thread(thread_id):
     sk.connect((TARGET_IP, TARGET_PORT))
 
     print(f"[Thread {thread_id}] Connected and sending data...")
+
     sk.sendall(ngsetup_data)
     response_1 = sk.recv(1024)  # 接收返回数据
     print(f"[Thread {thread_id}] Received response 1: {response_1.hex()}")
@@ -62,19 +65,26 @@ def sctp_client_thread(thread_id):
             time.sleep(random.uniform(0.1,0.5))
             sk.sendall(ini_data)
 
-            response_1 = sk.recv(1024)  # 接收返回数据
-            ngap_id_offset = 22
-            ngap_id_length = 4
-            ngap_id = response_1.hex()[ngap_id_offset:ngap_id_offset + ngap_id_length]
-            print(f"[Thread {thread_id}] Received response 1: {response_1.hex()}")
-            ngap_id_bytes = bytes.fromhex(ngap_id)
-
-
-            print(f"[Thread {thread_id}] Received response 1: {ngap_id}")
-            auth_response = (b"\x00\x2e\x40\x40\x00\x00\x04\x00\x0a\x00\x02"+
-                                    ngap_id_bytes +
-                                    b"\x00\x55\x00\x02\x00\x05\x00\x26\x00\x16\x15\x7e\x00\x57\x2d\x10\x18\xd0\xc2\xa3\x37\x0f\x62\x90\x54\xf9\x51\xfc\x85\x8b\x92\xf7\x00\x79\x40\x13\x50\x00\xf1\x10\x00\x00\x00\x01\x00\x00\xf1\x10\x00\x00\x01\xeb\x55\x7a\xef"
-                                    )
+            auth_request = sk.recv(1024)  # 接收返回数据
+            auth_response = authReceive_Result(auth_request)
+            # print(f"[Thread {thread_id}] Received response : {response_1.hex()}")
+            #
+            #
+            # ngap_id_offset = 22
+            # ngap_id_length = 4
+            # ngap_id = response_1.hex()[ngap_id_offset:ngap_id_offset + ngap_id_length]
+            #
+            #
+            # print(f"[Thread {thread_id}] Received response 1: {response_1.hex()}")
+            # ngap_id_bytes = bytes.fromhex(ngap_id)
+            #
+            #
+            # print(f"[Thread {thread_id}] Received response 1: {ngap_id}")
+            # auth_response = (b"\x00\x2e\x40\x40\x00\x00\x04\x00\x0a\x00\x02"+
+            #                         ngap_id_bytes +
+            #                         b"\x00\x55\x00\x02\x00\x05\x00\x26\x00\x16\x15\x7e\x00\x57\x2d\x10\x18\xd0\xc2\xa3\x37\x0f\x62\x90\x54\xf9\x51\xfc\x85\x8b\x92\xf7\x00\x79\x40\x13\x50\x00\xf1\x10\x00\x00\x00\x01\x00\x00\xf1\x10\x00\x00\x01
+            #                         \xeb\x55\x7a\xef"
+            #                         )
 
             time.sleep(random.uniform(0.1,0.5))
             sk.sendall(auth_response)
@@ -102,12 +112,14 @@ def sctp_client_thread(thread_id):
 # 启动并发的3个线程
 threads = []
 num_threads =1
+sctp_client_thread(1)
 
-for i in range(num_threads):
-    t = Thread(target=sctp_client_thread, args=(i,))
-    t.start()
-    threads.append(t)
 
-# 等待所有线程完成
-for t in threads:
-    t.join()
+# for i in range(num_threads):
+#     t = Thread(target=sctp_client_thread, args=(i,))
+#     t.start()
+#     threads.append(t)
+#
+# # 等待所有线程完成
+# for t in threads:
+#     t.join()

@@ -3,7 +3,7 @@
 """
 @author: GW
 @time: 2025-02-17 11:16
-@file: auth.py
+@file: calculateResStar.py
 @project: 5gAPItest
 @describe: Powered By GW
 """

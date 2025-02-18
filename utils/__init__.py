@@ -11,6 +11,7 @@
 
 from .octet_string import OctetString
 from .milenage import Milenage
+from .calculateResStar import calculateResStar
 import os
 import sys
 
@@ -29,4 +30,4 @@ for module in os.listdir(utils_path):
 
 
 
-__all__ = ["OctetString","Milenage"]
+__all__ = ["OctetString","Milenage","calculateResStar"]

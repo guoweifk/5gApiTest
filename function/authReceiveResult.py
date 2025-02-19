@@ -17,8 +17,8 @@ def authReceiveAndResult(auth_request:bytes):
     ngap_header, nas_pdu = split_ngap_nas(auth_request)
     ngap_downlink_message = NGAPDownLinkTransportNASMessage.parse(ngap_header)
     authentication_request_message = AuthenticationRequestMessage.parse(nas_pdu)
-    print(ngap_downlink_message)
-    print(authentication_request_message)
+    # print(ngap_downlink_message)
+    # print(authentication_request_message)
     current_timestamp = int(time.time())
 
     # 转换为十六进制格式（大写）

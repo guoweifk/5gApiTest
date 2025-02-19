@@ -25,7 +25,7 @@ def securityReceiveAndResult(security_request:bytes):
     )
 
     # security_request_message = AuthenticationRequestMessage.parse(nas_pdu)
-    print(ngap_downlink_message)
+    # print(ngap_downlink_message)
     # print(security_request_message)
 
     security_response_message = "7e04f15f1642007e005e7700094573806121856151f17100237e004179000d0100f1100000000000000000001001002e04f0f0f0f02f020101530100007940135000f110000000010000f110000001eb5da5ba"

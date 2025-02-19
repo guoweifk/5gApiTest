@@ -25,8 +25,8 @@ def calculate(opc: OctetString, key: OctetString, rand: OctetString, sqn_xor_ak:
     r.res, r.ak = OctetString(res), OctetString(ak)
     # 计算SQN
     r.sqn = OctetString.xor(sqn_xor_ak, r.ak)
-    print(f"sqn: {r.sqn}")
-    print(f"sqn_xor_ak: {sqn_xor_ak}")
+    # print(f"sqn: {r.sqn}")
+    # print(f"sqn_xor_ak: {sqn_xor_ak}")
 
     mac_a, mac_s = f1(key,rand,r.sqn.value, amf,opc)
     r.mac_a, r.mac_s = OctetString(mac_a), OctetString(mac_s)
@@ -37,7 +37,7 @@ def calculate(opc: OctetString, key: OctetString, rand: OctetString, sqn_xor_ak:
 
     # 输出所有 R 的内容
 
-    print(f"ck_ik: {r.ck_ik}")
+    # print(f"ck_ik: {r.ck_ik}")
     return r
 
 def encode_kdf_string(string: str) -> OctetString:
@@ -52,16 +52,16 @@ def encode_kdf_string(string: str) -> OctetString:
 
 def calculate_res_star(key: OctetString, snn: str, rand: OctetString, res: OctetString) -> OctetString:
     """计算 5G RES* (XRES*)"""
-    print(f"params: {encode_kdf_string(snn)}")
+    # print(f"params: {encode_kdf_string(snn)}")
     params = [
         encode_kdf_string(snn),  # 归一化 SNN
         OctetString(rand.value[:]),  # 复制 RAND
         OctetString(res.value[:])  # 复制 RES
     ]
-    print(f"params: {params}")
+    # print(f"params: {params}")
 
     output = calculate_kdf_key(key, 0x6B, params)  # 计算 KDF
-    print(f"kdf_key: {output}")
+    # print(f"kdf_key: {output}")
     return OctetString(output.value[-16:])  # 取最后 16 字节作为 RES*
 
 def calculate_kdf_key(key: OctetString, fc: int, parameters: List[OctetString]) -> OctetString:
@@ -90,7 +90,7 @@ def test():
 
 
     # ==== 输出结果 ====
-    print("m_resStar:", m_resStar.value.hex())
+    print("m_resStar:", m_resStar)
 
 
 if __name__ == "__main__":

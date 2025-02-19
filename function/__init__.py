@@ -7,7 +7,8 @@
 @project: 5gAPItest
 @describe: Powered By GW
 """
-from .authReceive_Result import authReceiveAndResult
+from .authReceiveResult import authReceiveAndResult
+from .securityReceiveResult import securityReceiveAndResult
 import os
 import sys
 
@@ -24,4 +25,4 @@ for module in os.listdir(function_path):
         module_name = module[:-3]  # 去掉 ".py"
         __import__(f"function.{module_name}")
 
-__all__ = ["authReceiveAndResult"]
+__all__ = ["authReceiveAndResult", "securityReceiveAndResult"]

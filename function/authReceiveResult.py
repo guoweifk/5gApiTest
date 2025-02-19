@@ -3,7 +3,7 @@
 """
 @author: GW
 @time: 2025-02-18 20:16 
-@file: authReceive_Result.py
+@file: authReceiveResult.py
 @project: 5gAPItest
 @describe: Powered By GW
 """
@@ -26,6 +26,7 @@ def authReceiveAndResult(auth_request:bytes):
     ngap_uplink_message = NGAPUplinkTransportNASMessage(
         amf_ue_ngap_id=ngap_downlink_message.amf_ue_ngap_id,
         ran_ue_ngap_id=ngap_downlink_message.ran_ue_ngap_id,
+        ngap_message_len= "40",
         nas_pdu_type= "0016",
         nas_pdu_length="15"
     )
@@ -44,8 +45,7 @@ def test():
     # 示例数据
     ngap_request_message_hex = "0004403e000003000a000200020055000200010026002b2a7e005601020000216b0bbf58144c8d74ade24b5626bd5d2f2010719762a4686f80005ec4e5f58c90a204"
     # ngap_response_message_hex = "002E4040000004000A0002000200550002000100260016157E00572D106A9EF8FC9D2C11A36D4DA18229C3B925007940135000F110000000010000F110000001EB5DA5BA"
-    "002E4040000004000A0002000200550002000100260016157E00572D106A9EF8FC9D2C11A36D4DA18229C3B925007940135000F110000000010000F110000001EB5DA5BA"
-    "002E4040000004000A0002000200550002000100260016157E00572D106A9EF8FC9D2C11A36D4DA18229C3B925007940135000F110000000010000F11000000167B54B3C"
+
     # 拆分 NGAP 头部和 NAS-PDU
     ngap_response_message_hex = authReceiveAndResult(ngap_request_message_hex)
 

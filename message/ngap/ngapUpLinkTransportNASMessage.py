@@ -10,11 +10,9 @@
 from dataclasses import dataclass
 
 @dataclass
-class UplinkNASTransport:
+class NGAPUplinkTransportNASMessage:
 
-    amf_ue_ngap_id_type: str
     amf_ue_ngap_id: str
-    ran_ue_ngap_id_type: str
     ran_ue_ngap_id: str
     nas_pdu_type: str
     nas_pdu_length: str
@@ -25,11 +23,13 @@ class UplinkNASTransport:
     criticality: str = "00"  # 固定 Criticality
     squence_length: str = "0004" # 固定 squence_length
     amf_ue_ngap_id_field: str = "000A"  # 固定 AMF-UE-NGAP-ID Identifier
+    amf_ue_ngap_id_type_len: str = "0002"
     ran_ue_ngap_id_field: str = "0055"  # 固定 RAN-UE-NGAP-ID Identifier
+    ran_ue_ngap_id_type_len: str = "0002"
     nas_pdu_field: str = "0026"  # 固定 NAS-PDU Identifier
 
     @classmethod
-    def parse(cls, message: str) -> "UplinkNASTransport":
+    def parse(cls, message: str) -> "NGAPUplinkTransportNASMessage":
         """ 解析 Uplink NAS Transport 消息（仅解析变换字段） """
         message = message.upper()
 
@@ -46,9 +46,9 @@ class UplinkNASTransport:
         nas_pdu_length = message[46:48]  # 变化的 Length
 
         return cls(
-            amf_ue_ngap_id_type=amf_ue_ngap_id_type,
+            amf_ue_ngap_id_type_len=amf_ue_ngap_id_type,
             amf_ue_ngap_id=amf_ue_ngap_id,
-            ran_ue_ngap_id_type=ran_ue_ngap_id_type,
+            ran_ue_ngap_id_type_len=ran_ue_ngap_id_type,
             ran_ue_ngap_id=ran_ue_ngap_id,
             nas_pdu_type=nas_pdu_type,
             nas_pdu_length=nas_pdu_length
@@ -62,10 +62,10 @@ class UplinkNASTransport:
             f"{self.criticality}"
             f"{self.squence_length}"
             f"{self.amf_ue_ngap_id_field}"
-            f"{self.amf_ue_ngap_id_type}"
+            f"{self.amf_ue_ngap_id_type_len}"
             f"{self.amf_ue_ngap_id}"
             f"{self.ran_ue_ngap_id_field}"
-            f"{self.ran_ue_ngap_id_type}"
+            f"{self.ran_ue_ngap_id_type_len}"
             f"{self.ran_ue_ngap_id}"
             f"{self.nas_pdu_field}"
             f"{self.nas_pdu_type}"
@@ -80,10 +80,10 @@ class UplinkNASTransport:
             f"  Criticality: {self.criticality} (固定)\n"
             f"  Squence_Length: {self.squence_length} (固定)\n"
             f"  AMF-UE-NGAP-ID Field: {self.amf_ue_ngap_id_field} (固定)\n"
-            f"  AMF-UE-NGAP-ID Type: {self.amf_ue_ngap_id_type}\n"
+            f"  AMF-UE-NGAP-ID Type: {self.amf_ue_ngap_id_type_len}\n"
             f"  AMF-UE-NGAP-ID: {self.amf_ue_ngap_id}\n"
             f"  RAN-UE-NGAP-ID Field: {self.ran_ue_ngap_id_field} (固定)\n"
-            f"  RAN-UE-NGAP-ID Type: {self.ran_ue_ngap_id_type}\n"
+            f"  RAN-UE-NGAP-ID Type: {self.ran_ue_ngap_id_type_len}\n"
             f"  RAN-UE-NGAP-ID: {self.ran_ue_ngap_id}\n"
             f"  NAS-PDU Field: {self.nas_pdu_field} (固定)\n"
             f"  NAS-PDU Type: {self.nas_pdu_type}\n"
@@ -96,7 +96,7 @@ def test():
     uplink_nas_transport_hex = "002E4040000004000A000200020055000200010026001615"
 
     # 解析 Uplink NAS Transport
-    uplink_nas_transport = UplinkNASTransport.parse(uplink_nas_transport_hex)
+    uplink_nas_transport = NGAPUplinkTransportNASMessage.parse(uplink_nas_transport_hex)
 
     # 打印解析结果
     print(uplink_nas_transport)

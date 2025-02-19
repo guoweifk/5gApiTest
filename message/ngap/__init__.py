@@ -9,5 +9,6 @@
 """
 from .ngapSplit import split_ngap_nas
 from .ngapDownLinkNASTransport import NGAPDownLinkTransportNASMessage
+from .ngapUpLinkTransportNASMessage import NGAPUplinkTransportNASMessage
 
-__all__ = ["split_ngap_nas", "NGAPDownLinkTransportNASMessage"]
+__all__ = ["split_ngap_nas", "NGAPDownLinkTransportNASMessage", "NGAPUplinkTransportNASMessage"]

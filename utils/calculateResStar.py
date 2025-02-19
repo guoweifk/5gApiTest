@@ -26,7 +26,7 @@ def calculate(opc: OctetString, key: OctetString, rand: OctetString, sqn_xor_ak:
     # 计算SQN
     r.sqn = OctetString.xor(sqn_xor_ak, r.ak)
     print(f"sqn: {r.sqn}")
-    print(f"sqn_xor_ak: {sqn_xor_ak.hex()}")
+    print(f"sqn_xor_ak: {sqn_xor_ak}")
 
     mac_a, mac_s = f1(key,rand,r.sqn.value, amf,opc)
     r.mac_a, r.mac_s = OctetString(mac_a), OctetString(mac_s)
@@ -77,17 +77,17 @@ def calculate_kdf_key(key: OctetString, fc: int, parameters: List[OctetString]) 
     return hmac_sha256_octet_string(key, inp)  # 计算 HMAC-SHA256
 
 def calculateResStar(rand: bytes, sqn_xor_ak: bytes):
-    milenage = calculate(OPc, K, rand.hex(), OctetString(sqn_xor_ak.hex()), AMF)
+    milenage = calculate(OPc, K, rand, sqn_xor_ak, AMF)
     m_resStar = calculate_res_star(milenage.ck_ik, SNN, OctetString(milenage.rand), milenage.res)
-    return m_resStar
+    return m_resStar.value.hex()
 
 def test():
     # ==== 计算 Milenage 并计算 RES* ====
     RAND = bytes.fromhex("5439cc5a3f65c2f14ab5628f6c4a0b28")  # 16字节随机数
     sqn_xor_ak = bytes.fromhex("21ea888a0065")  # 6字节 SQN
     print(RAND)
-    milenage = calculate(OPc, K, RAND, sqn_xor_ak, AMF)
-    m_resStar = calculate_res_star(milenage.ck_ik, SNN, OctetString(milenage.rand), milenage.res)
+    m_resStar = calculateResStar(RAND, sqn_xor_ak)
+
 
     # ==== 输出结果 ====
     print("m_resStar:", m_resStar.value.hex())

@@ -17,14 +17,17 @@ class NGAPDownLinkTransportNASMessage:
     ran_ue_ngap_id: str
     nas_pdu_length: str
 
+
     # **固定字段**
     pdu_type: str = "0004"  # 固定 NGAP PDU Type
     procedure_code: str = "403E"  # 固定 Downlink NAS Transport Procedure Code
     criticality: str = "00"  # 固定 Criticality
-
     amf_ue_ngap_id_field: str = "000A"  # 固定 AMF-UE-NGAP-ID Identifier
+    amf_ue_ngap_id_length: str = "0002"
     ran_ue_ngap_id_field: str = "0055"  # 固定 RAN-UE-NGAP-ID Identifier
+    ran_ue_ngap_id_length: str = "0002"
     nas_pdu_field: str = "0026002b"  # 固定 NAS-PDU Identifier
+
 
     @classmethod
     def parse(cls, message: str) -> "NGAPDownLinkTransportNASMessage":

@@ -11,7 +11,7 @@ import socket
 import sctp
 import time
 import random
-from function import authReceiveAndResult,securityReceiveAndResult
+from function import authReceiveAndResult, securityReceiveAndResult,initContextAcceptReceiveAndResult
 
 # 要发送的数据包
 ngsetup_data = b"\x00\x15\x00\x3e\x00\x00\x04\x00\x1b\x00\x09\x00\x00\xf1\x10\x50" \
@@ -50,9 +50,9 @@ def sctp_client_thread(thread_id):
 
     print(f"[Thread {thread_id}] Connected and sending data...")
 
-    sk.sendall(ngsetup_data)
+    ngsetup_Response = sk.sendall(ngsetup_data)
     response_1 = sk.recv(1024)  # 接收返回数据
-    print(f"[Thread {thread_id}] Received response 1: {response_1.hex()}")
+    # print(f"Received ngsetup_Response : {ngsetup_Response}")
     time.sleep(1)
     # try:
     #     while True:
@@ -60,25 +60,25 @@ def sctp_client_thread(thread_id):
     time.sleep(random.uniform(0.1, 0.5))
     sk.sendall(ini_data)
 
-    #接收、处理、发送auth相关信息
+    # 接收、处理、发送auth相关信息
     auth_request = bytes(sk.recv(1024))  # 接收返回数据
     print(auth_request.hex())
     auth_response = authReceiveAndResult(auth_request.hex())
     time.sleep(random.uniform(0.1, 0.5))
     sk.sendall(bytes.fromhex(auth_response))
-
-
-
+    # 接收、处理、发送security相关信息
     security_request = sk.recv(1024)  # 接收返回数据
-    security_response= securityReceiveAndResult(security_request.hex())
+    security_response = securityReceiveAndResult(security_request.hex())
     time.sleep(random.uniform(0.1, 0.5))
     sk.sendall(bytes.fromhex(security_response))
     time.sleep(random.uniform(0.1, 0.5))
 
+    # UEContext初始化消息
     init_context_setup_request = bytes(sk.recv(1024))  # 接收返回数据
     print(f"Received init_context_setup_request : {init_context_setup_request.hex()}")
+    ue_response = initContextAcceptReceiveAndResult(init_context_setup_request)
 
-    sk.sendall(ue_release)
+    sk.sendall(ue_response)
     time.sleep(random.uniform(0.1, 0.5))
     sk.sendall(init_release)
     time.sleep(random.uniform(0.1, 0.5))
@@ -88,6 +88,8 @@ def sctp_client_thread(thread_id):
     # sk.close()
     print(f"[Thread {thread_id}] Connection closed.")
     time.sleep(random.uniform(0, 1))
+
+
 # except KeyboardInterrupt:
 #     print(f"[Thread {thread_id}] Terminating.")
 # except Exception as e:

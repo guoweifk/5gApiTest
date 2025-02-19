@@ -11,9 +11,11 @@
 from .ngap.ngapSplit import split_ngap_nas
 from .ngap.ngapDownLinkNASTransport import NGAPDownLinkTransportNASMessage
 from .ngap.ngapUpLinkTransportNASMessage import NGAPUplinkTransportNASMessage
+from .ngap.initialContextSetupResponse import InitialContextSetupResponse
 # 从 nas 里导入关键方法
 from .nas.authrequestMessage import AuthenticationRequestMessage
 from .nas.authresponseMessage import AuthenticationResponseMessage
+
 
 import os
 import sys
@@ -32,4 +34,5 @@ for module in os.listdir(message_path):
         __import__(f"message.{module_name}")
 
 # 让 message 直接使用这些方法
-__all__ = ["split_ngap_nas", "NGAPDownLinkTransportNASMessage", "NGAPUplinkTransportNASMessage","AuthenticationRequestMessage", "AuthenticationResponseMessage"]
+__all__ = ["split_ngap_nas", "NGAPDownLinkTransportNASMessage", "NGAPUplinkTransportNASMessage","AuthenticationRequestMessage",
+           "AuthenticationResponseMessage","InitialContextSetupResponse"]

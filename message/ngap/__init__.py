@@ -10,5 +10,6 @@
 from .ngapSplit import split_ngap_nas
 from .ngapDownLinkNASTransport import NGAPDownLinkTransportNASMessage
 from .ngapUpLinkTransportNASMessage import NGAPUplinkTransportNASMessage
+from .initialContextSetupResponse import InitialContextSetupResponse
 
-__all__ = ["split_ngap_nas", "NGAPDownLinkTransportNASMessage", "NGAPUplinkTransportNASMessage"]
+__all__ = ["split_ngap_nas", "NGAPDownLinkTransportNASMessage", "NGAPUplinkTransportNASMessage","InitialContextSetupResponse"]

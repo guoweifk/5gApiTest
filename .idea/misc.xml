@@ -3,8 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="Remote Python 3.8.20 (sftp://root@192.168.123.88:22/opt/environment/anaconda/envs/py38/bin/python)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="py38" project-jdk-type="Python SDK" />
-  <component name="PyPackaging">
-    <option name="earlyReleasesAsUpgrades" value="true" />
-  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="py38_log" project-jdk-type="Python SDK" />
 </project>

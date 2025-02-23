@@ -99,17 +99,61 @@ def sctp_client_thread(thread_id):
         print(f"[Thread {thread_id}] Connection closed.")
 
 
-# sctp_client_thread(1)
-# 255 个线程直接会让AMF崩溃报错
-num_threads = 1
-threads = []
 
 
-for i in range(num_threads):
-    t = Thread(target=sctp_client_thread, args=(i,))
-    t.start()
-    threads.append(t)
+def test_mulit():
+    # sctp_client_thread(1)
+    # 255 个线程直接会让AMF崩溃报错
+    num_threads = 1
+    threads = []
 
-# 等待所有线程完成
-for t in threads:
-    t.join()
+    for i in range(num_threads):
+        t = Thread(target=sctp_client_thread, args=(i,))
+        t.start()
+        threads.append(t)
+
+    # 等待所有线程完成
+    for t in threads:
+        t.join()
+
+
+def test_one():
+    time.sleep(random.uniform(0.1, 0.2))
+    sk = sctp.sctpsocket_tcp(socket.AF_INET)
+    sk.connect((TARGET_IP, TARGET_PORT))
+    print(f" Connected and sending data...")
+    sk.sendall(ngsetup_data)
+    response_1 = sk.recv(1024)  # 接收返回数据
+    time.sleep(1)
+    sk.sendall(ini_data)
+    # time.sleep(wait_time)
+    # sk.recv(1024)
+    # 接收、处理、发送auth相关信息
+    auth_request = sk.recv(1024)  # 接收返回数据
+    # print(f"[Thread {thread_id}] Received auth_request: {auth_request.hex()}")
+    auth_response = authReceiveAndResult(auth_request.hex())
+    # time.sleep(wait_time)
+    # time.sleep(random.uniform(1.1, 1.5))
+    sk.sendall(bytes.fromhex(auth_response))
+    # 接收、处理、发送security相关信息
+    security_request = sk.recv(1024)  # 接收返回数据
+    # print(f"[Thread {thread_id}] Received security_request: {security_request.hex()}")
+    security_response = securityReceiveAndResult(security_request.hex())
+    # time.sleep(wait_time)
+    sk.sendall(bytes.fromhex(security_response))
+    # print(f"[Thread {thread_id}] Received security_response: {security_response}")
+    # time.sleep(wait_time)
+
+    # UEContext初始化消息
+    init_context_accept_message = bytes(sk.recv(1024))  # 接收返回数据
+    print(f"Received init_context_accept_message: {init_context_accept_message.hex()}")
+    ue_response = initContextAcceptReceiveAndResult(init_context_accept_message)
+
+    sk.sendall(ini_data)
+    sk.recv(1024)
+    # print(1)
+    # time.sleep(random.uniform(0.1, 1))
+
+if __name__ == "__main__":
+    # test_mulit()
+    test_one()

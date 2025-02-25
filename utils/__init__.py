@@ -8,10 +8,7 @@
 @describe: Powered By GW
 """
 # utils/__init__.py
-
-from .octet_string import OctetString
-from .milenage import Milenage
-from .calculateResStar import calculateResStar
+from .calculateResStar import calculateRes
 import os
 import sys
 
@@ -30,4 +27,4 @@ for module in os.listdir(utils_path):
 
 
 
-__all__ = ["OctetString","Milenage","calculateResStar"]
+__all__ = ["calculateRes"]

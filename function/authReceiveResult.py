@@ -31,7 +31,7 @@ def authReceiveAndResult(auth_request:bytes):
         nas_pdu_length="15"
     )
     authentication_response_message = AuthenticationResponseMessage(
-        res_star= calculateResStar(bytes.fromhex(authentication_request_message.rand),bytes.fromhex(authentication_request_message.sqn_xor_ak)),
+        res_star= calculateRes(bytes.fromhex(authentication_request_message.rand),bytes.fromhex(authentication_request_message.sqn_xor_ak)),
         nr_cgi="5000F11000000001",
         plmn= "0000F110",
         tac= "000001",

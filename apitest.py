@@ -15,6 +15,7 @@ from function import authReceiveAndResult, securityReceiveAndResult,initContextA
 from threading import Thread
 
 
+
 # 要发送的数据包
 open5gs_ngsetup_data = b"\x00\x15\x00\x3e\x00\x00\x04\x00\x1b\x00\x09\x00\x00\xf1\x10\x50" \
                b"\x00\x00\x00\x01\x00\x52\x40\x14\x08\x80\x55\x45\x52\x41\x4e\x53" \

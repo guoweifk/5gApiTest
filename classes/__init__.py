@@ -10,7 +10,7 @@
 import os
 import sys
 from .SCTP import SCTPClient
-from .Config import Config
+from .InterfaceConfig import InterfaceConfig
 from .GTPU import GTPU,GTPUConfig
 from .NGAPSim import GNB
 from .UESim import UESim
@@ -27,6 +27,6 @@ if class_path not in sys.path:
 for module in os.listdir(class_path):
     if module.endswith(".py") and module != "__init__.py":
         module_name = module[:-3]  # 去掉 ".py"
-        __import__(f"class_path.{module_name}")
+        __import__(f"classes.{module_name}")
 
-__all__ = ["Config", "SCTPClient", "UE", "GNB", "UESim", "GTPU","GTPUConfig"]
+__all__ = ["InterfaceConfig", "SCTPClient", "UE", "GNB", "UESim", "GTPU", "GTPUConfig"]

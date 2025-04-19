@@ -7,19 +7,23 @@
 @project: 5gAPItest
 @describe: Powered By GW
 """
-import ctypes
-import time
+
 import socket
-import ipaddress
-import os
 import netifaces
 
 
-class Config:
+class InterfaceConfig:
     def __init__(self, ifname: str):
+        # 获取接口名称（ifname） 并存储。
         self.ifname = ifname
+        # 使用 socket.if_nametoindex() 获取接口索引（ifindex）
         self.ifindex = socket.if_nametoindex(self.ifname)
+        # 网络接口名称和索引的映射表
         self.interfaces_map = self.get_network_interfaces_map()
+        # num_ues：当前连接的 UE 数量。
+        # prev：上一次的状态数据
+        # config/state 相关变量：用于存储 配置信息 和 网络状态。
+        # b 和 func：用于 回调函数 或 某些状态值。
         self.num_ues = 0
         self.prev = 0
         self.config = None

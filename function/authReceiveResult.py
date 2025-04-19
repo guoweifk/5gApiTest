@@ -10,8 +10,6 @@
 from message import *
 from utils import *
 import time
-import datetime
-
 
 def authReceiveAndResult(auth_request:bytes):
     ngap_header, nas_pdu = split_ngap_nas(auth_request)
@@ -30,22 +28,26 @@ def authReceiveAndResult(auth_request:bytes):
         nas_pdu_type= "0016",
         nas_pdu_length="15"
     )
+    KSEAF,res_star = calculateRes(bytes.fromhex(authentication_request_message.rand),bytes.fromhex(authentication_request_message.sqn_xor_ak))
+    # print(f"res_star: {res_star}")
     authentication_response_message = AuthenticationResponseMessage(
-        res_star= calculateRes(bytes.fromhex(authentication_request_message.rand),bytes.fromhex(authentication_request_message.sqn_xor_ak)),
+        res_star= res_star,
         nr_cgi="5000F11000000001",
         plmn= "0000F110",
         tac= "000001",
         timestamp=hex_timestamp
     )
 
-    return ngap_uplink_message.to_hex()+authentication_response_message.to_hex()
+    return KSEAF, ngap_uplink_message.to_hex()+authentication_response_message.to_hex()
 
 
 def test():
     # 示例数据
     ngap_request_message_hex = "0004403e000003000a000200020055000200010026002b2a7e005601020000216b0bbf58144c8d74ade24b5626bd5d2f2010719762a4686f80005ec4e5f58c90a204"
     # ngap_response_message_hex = "002E4040000004000A0002000200550002000100260016157E00572D106A9EF8FC9D2C11A36D4DA18229C3B925007940135000F110000000010000F110000001EB5DA5BA"
-
+    "0004403e000003000a000200020055000200010026002b2a7e005601020000216b0bbf58144c8d74ade24b5626bd5d2f2010719762a4686f80005ec4e5f58c90a204"
+    "002E4040000004000A0002000200550002000100260016157E00572D106A9EF8FC9D2C11A36D4DA18229C3B925007940135000F110000000010000F110000001EB5DA5BA"
+    "002E4040000004000A000220027F00550002000500260016157E00572D103A950EF2EF83A14278170C12B143CD7F007940135000F110000000010000F11000000167FFBD8F"
     # 拆分 NGAP 头部和 NAS-PDU
     ngap_response_message_hex = authReceiveAndResult(ngap_request_message_hex)
 

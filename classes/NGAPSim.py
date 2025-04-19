@@ -306,20 +306,33 @@ class GNB():
         return threads
 
     def _ngap_to_ue_thread_function(self) -> None:
-        """ This thread function will read from queue and handle NGAP DownLink messages from 5G Core
+        """
+        该线程函数用于从队列中读取并处理来自5G核心网的NGAP下行消息。
 
-            It will then select the appropriate NGAP procedure to handle the message. Where the procedure
-            returns an NAS PDU, it will be put in the queue to be sent to the UE
+        它会根据接收到的消息选择合适的NGAP处理程序。如果处理程序返回了一个NAS PDU，
+        则将其放入队列中，以发送给用户设备（UE）。
+
+        参数:
+            self: 当前类的实例对象。
+
+        返回值:
+            无返回值。
         """
 
+        # 线程在退出标志未设置的情况下持续运行
         while not self.exit_flag.value:
             try:
                 data = None
+
+                # 使用锁确保线程安全地从SCTP接收数据
                 with ngap_to_ue_lock:
                     data = self.sctp.recv()
                 if data:
+                    # 初始化NGAP PDU并解析接收到的数据
                     PDU = NGAP.NGAP_PDU_Descriptions.NGAP_PDU
                     PDU.from_aper(data)
+
+                    # 记录接收到的NGAP PDU信息
                     logger.debug(f"\n|----------------------------------------------------------------------------------------------------------------|\n\
                 gNB received message from 5GC\n\
 |----------------------------------------------------------------------------------------------------------------|\n\
@@ -330,12 +343,17 @@ class GNB():
                     if not procedure_func:
                         # logger.debug(f"Received downlink procedure {procedureCode} without handler mapped to it")
                         continue
+
+                    # 执行处理程序并获取返回值
                     ngap_pdu, nas_pdu, ue_ = procedure_func(PDU)
 
+                    # 处理用户设备（UE）信息
                     if ue_:
                         if not ue_['ran_ue_ngap_id'] in self.ues:
                             self.ues[ue_['ran_ue_ngap_id']] = {'amf_ue_ngap_id': ue_['amf_ue_ngap_id']}
                         self.ues[ue_['ran_ue_ngap_id']]['amf_ue_ngap_id'] = ue_['amf_ue_ngap_id']
+
+                        # 如果存在QoS标识符，则记录相关传输层信息
                         if ue_.get('qos_identifier'):
                             ul_teid = utils_py3.bytes_to_uint(ue_['ul_up_transport_layer_information'][1]['gTP-TEID'],
                                                               32)
@@ -349,6 +367,8 @@ class GNB():
                             self.ues[ue_['ran_ue_ngap_id']]['ul_teid'] = ul_teid
                             self.ues[ue_['ran_ue_ngap_id']]['dl_teid'] = dl_teid
                             self.ues[ue_['ran_ue_ngap_id']]['upf_address'] = upf_address
+
+                    # 发送NGAP PDU到5G核心网
                     if ngap_pdu:
                         logger.debug(f"\n|----------------------------------------------------------------------------------------------------------------|\n\
                 gNB sending message to 5GC\n\
@@ -356,8 +376,11 @@ class GNB():
 {ngap_pdu.show()}\n\
 |----------------------------------------------------------------------------------------------------------------|\n\n")
                         self.sctp.send(ngap_pdu.to_aper())
+
+                    # 发送NAS PDU到用户设备（UE）
                     if nas_pdu:
                         self.ngap_to_ue.send((nas_pdu, ue_['ran_ue_ngap_id']))
+
             except Exception as e:
                 logger.error(f"Error sending message to UESim: {e}")
                 # IF error occurs, likely from SCTP end program
@@ -393,6 +416,7 @@ class GNB():
                     data, ran_ue_ngap_id = self.ngap_to_ue.recv()
                 if data:
                     # ran_ue_ngap_id = int(ue.supi[-10:])
+                    # 解析NAS消息。
                     Msg, err = parse_NAS5G(data)
                     if err:
                         logger.error("Error parsing NAS message: %s", err)

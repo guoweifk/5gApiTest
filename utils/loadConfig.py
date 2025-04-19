@@ -86,7 +86,7 @@ def loadConfig(args):
         ue_config["ue_profiles"], num_cpus - 1 if num_cpus > 1 else 1
     )
 
-    gtpuTraficConfig = Config(server_config["gtpuConfig"]["interface"])
+    gtpuTraficConfig = InterfaceConfig(server_config["gtpuConfig"]["interface"])
 
     gtpuConfig = GTPUConfig(
         src_mac=server_config["gtpuConfig"]["srcMac"],
@@ -102,6 +102,9 @@ def loadConfig(args):
     ue_fg_msg_states = multiprocessing.Array(
         "i", tuple([0] * (FGSM_MAX_TYPE - FGMM_MIN_TYPE + 1)), lock=True
     )
+    # 初始化一个multiprocessing.Value对象，用于跨进程共享变量
+    # "i" 表示变量的类型为整型
+    # 0 是变量的初始值
     exit_program = multiprocessing.Value("i", 0)
     ue_sim_time = TimeRange(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0)
 
@@ -110,7 +113,10 @@ def loadConfig(args):
 
     for i in range(len(ue_lists)):
         sctp_client = SCTPClient(server_config)
+        # 创建NGAP协议的双向通信管道，用于模拟基站和UE之间的通信
         ngap_to_ue, ue_to_ngap = Pipe(duplex=True)
+
+        # 创建UPF的双向通信管道，用于模拟核心网和UE之间的通信，通过管道来传输
         upf_to_ue, ue_to_upf = Pipe(duplex=True)
         config = {}
         gnb = GNB(

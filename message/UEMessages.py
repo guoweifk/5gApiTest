@@ -24,13 +24,33 @@ import time
 
 
 def registration_request(ue, IEs, Msg=None):
+    """
+    构建5G移动性管理(5GMM)注册请求。
+
+    更新IEs字典，添加5GMM注册请求所需的信息，包括头信息、安全能力等，
+    并将这些信息封装到消息中，更新用户设备(UE)的状态和程序计数器。
+
+    参数:
+    - ue: 用户设备对象，包含UE的特定信息，如MCC、MNC和MSIN。
+    - IEs: 包含注册请求的IE（Information Elements）的字典。
+    - Msg: （可选）用于构建的现有消息对象，通常为None。
+
+    返回:
+    - Msg: 构建的5GMM注册请求消息对象。
+    - '5GMMRegistrationRequest': 表示消息类型的字符串。
+    """
+    # 设置5GMM头信息，指定协议类型和安全相关参数
     IEs['5GMMHeader'] = {'EPD': 126, 'spare': 0, 'SecHdr': 0, 'Type': 65}
+    # 设置NAS密钥序列号，用于加密和完整性保护
     IEs['NAS_KSI'] = {'TSC': 0, 'Value': 7}
+    # 设置5GS注册类型，表示初次注册
     IEs['5GSRegType'] = {'FOR': 1, 'Value': 1}
+    # 构建5GS用户身份，包括PLMN、MSIN等信息
     IEs['5GSID'] = {'spare': 0, 'Fmt': 0, 'spare': 0, 'Type': 1, 'Value': {'PLMN': ue.mcc + ue.mnc,
                                                                            'RoutingInd': b'\x00\x00', 'spare': 0,
                                                                            'ProtSchemeID': 0, 'HNPKID': 0,
                                                                            'Output': encode_bcd(ue.msin)}}
+    # 设置UE安全能力，包括支持的加密和完整性算法
     IEs['UESecCap'] = {'5G-EA0': 1, '5G-EA1_128': 1, '5G-EA2_128': 1, '5G-EA3_128': 1, '5G-EA4': 0, '5G-EA5': 0,
                        '5G-EA6': 0, '5G-EA7': 0,
                        '5G-IA0': 1, '5G-IA1_128': 1, '5G-IA2_128': 1, '5G-IA3_128': 1, '5G-IA4': 0, '5G-IA5': 0,
@@ -39,12 +59,19 @@ def registration_request(ue, IEs, Msg=None):
                        'EEA7': 0,
                        'EIA0': 1, 'EIA1_128': 1, 'EIA2_128': 1, 'EIA3_128': 1, 'EIA4': 0, 'EIA5': 0, 'EIA6': 0,
                        'EIA7': 0}
+    # 创建FGMM注册请求消息对象
     Msg = FGMMRegistrationRequest(val=IEs)
+    # 将消息转换为字节，以便传输
     ue.MsgInBytes = Msg.to_bytes()
+    # 更新UE状态为已注册（初始化阶段）
     ue.set_state(FGMMState.REGISTERED_INITIATED)
+    # 设置当前程序计数器，表示正在进行的程序步骤
     ue.set_procedure(65)
+    # 记录注册请求开始时间
     ue.start_time = time.time()
+    # 返回构建的消息对象和消息类型
     return Msg, '5GMMRegistrationRequest'
+
 
 
 def registration_complete(ue, IEs, Msg=None):

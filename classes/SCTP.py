@@ -14,7 +14,7 @@ import sctp
 from sctp import *
 import threading
 import select
-from pycrate_corenet import Server
+# from pycrate_corenet import Server
 
 logger = logging.getLogger('__SCTPClient__')
 

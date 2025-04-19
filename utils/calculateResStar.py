@@ -8,7 +8,6 @@
 @describe: Powered By GW
 """
 
-from helpers import *
 from CryptoMobile.Milenage import Milenage
 from CryptoMobile.Milenage import make_OPc
 from CryptoMobile.conv import *
@@ -19,6 +18,10 @@ SNN = b"5G:mnc001.mcc001.3gppnetwork.org"
 K = bytes.fromhex("465B5CE8B199B49FAA5F0A2EE238A6BC")  # 16字节密钥 K
 OPc = bytes.fromhex("E8ED289DEBA952E4283B54E88E6183CA")  # 16字节 OPc
 
+def byte_xor(ba1, ba2):
+    """ XOR two byte strings """
+    return bytes([_a ^ _b for _a, _b in zip(ba1, ba2)])
+
 # 调用库函数
 def calculateRes(rand: bytes, sqn_xor_ak: bytes):
     Mil = Milenage(OPc)
@@ -27,12 +30,17 @@ def calculateRes(rand: bytes, sqn_xor_ak: bytes):
     SQN = byte_xor(AK, sqn_xor_ak)
     mac_a = Mil.f1(K, rand, SQN=SQN, AMF=AMF)
     Res = conv_501_A4(CK, IK, SNN, rand, RES)
+    KAUSF = conv_501_A2(CK, IK, SNN, sqn_xor_ak)
+    # print("KAUSF: ", hexlify(KAUSF))
+    KSEAF = conv_501_A6(KAUSF,SNN)
+    # print("KSEAF: ", hexlify(KSEAF))
+
     # print("AK: ", hexlify(AK))
     # print("SQN: ", hexlify(SQN))
     # print(mac_a)
     # print(hexlify(CK))
-    # print (hexlify(RES))
-    return Res.hex()
+    # print ("RES: ",hexlify(RES))
+    return KSEAF,Res.hex()
 
 def test():
     # ==== 计算 Milenage 并计算 RES* ====

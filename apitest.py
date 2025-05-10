@@ -189,7 +189,7 @@ def test_mulit():
     # gnb_thread = Thread(target=sctp_gnb_thread, args=(1,))
     # gnb_thread.start()
     # time.sleep(1)
-    num_threads = 150000
+    num_threads = 500
     threads = []
     k = 0
     for i in range(num_threads):

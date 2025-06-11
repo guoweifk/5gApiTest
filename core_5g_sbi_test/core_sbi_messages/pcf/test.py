@@ -7,15 +7,7 @@
 @project: 5gAPItest
 @describe: Powered By GW
 """
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
-"""
-@author: GW
-@time: 2025-04-25 15:14 
-@file: test.py
-@project: 5gAPItest
-@describe: Powered By GW
-"""
+
 import socket
 import time
 from h2.connection import H2Connection

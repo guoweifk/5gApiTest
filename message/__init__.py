@@ -8,13 +8,13 @@
 @describe: Powered By GW
 """
 # 从 ngap 里导入关键方法
-from .ngap.ngapSplit import split_ngap_nas
-from .ngap.ngapDownLinkNASTransport import NGAPDownLinkTransportNASMessage
-from .ngap.ngapUpLinkTransportNASMessage import NGAPUplinkTransportNASMessage
-from .ngap.initialContextSetupResponse import InitialContextSetupResponse
+from message.ngap import split_ngap_nas
+from message.ngap import NGAPDownLinkTransportNASMessage
+from message.ngap import NGAPUplinkTransportNASMessage
+from message.ngap import InitialContextSetupResponse
 # 从 nas 里导入关键方法
-from .nas.authrequestMessage import AuthenticationRequestMessage
-from .nas.authresponseMessage import AuthenticationResponseMessage
+from message.nas import AuthenticationRequestMessage
+from message.nas import AuthenticationResponseMessage
 
 
 import os

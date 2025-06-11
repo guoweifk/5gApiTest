@@ -39,7 +39,7 @@ def build_multipart_body():
         "pduSessionId": 1,
         "dnn": "internet",
         "sNssai": {"sst": 1},
-        "servingNfId": "8cc32472-2b1a-41f0-9850-cd0337c651ed",
+        "servingNfId": "6b4a4b3c-401d-41f0-ab3f-2fd417c79ad4",
         "guami": {"plmnId": {"mcc": "001", "mnc": "01"}, "amfId": "020040"},
         "servingNetwork": {"mcc": "001", "mnc": "01"},
         "n1SmMsg": {"contentId": "5gnas-sm"},
@@ -54,7 +54,7 @@ def build_multipart_body():
         },
         "ueTimeZone": "+08:00",
         "smContextStatusUri": "http://127.0.0.5:7777/namf-callback/v1/imsi-001010000000000/sm-context-status/1",
-        "pcfId": "8cc40590-2b1a-41f0-a50a-09159fb4ca15"
+        "pcfId": "6b4bb90e-401d-41f0-8fcf-790a57f78ac9"
     }
 
     import json
@@ -128,7 +128,7 @@ def send_http2_request():
     return sm_context_id
 
 if __name__ == '__main__':
-    while True:
-        result = send_http2_request()
-        time.sleep(1)
+
+    result = send_http2_request()
+    time.sleep(1)
 

@@ -33,7 +33,7 @@ def authReceiveAndResult(auth_request:bytes):
     authentication_response_message = AuthenticationResponseMessage(
         res_star= res_star,
         nr_cgi="5000F11000000001",
-        plmn= "0000F110",
+        plmn= "006496F2",
         tac= "000001",
         timestamp=hex_timestamp
     )
